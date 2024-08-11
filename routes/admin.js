@@ -3,8 +3,8 @@ import express from 'express';
 
 const router = express.Router();
 
-// router.post('/users', getUsers);
-// router.post('/animals', getAnimals);
-// router.post('/training', getTrainingLogs);
+// router.get('/users', getUsers);
+// router.get('/animals', getAnimals);
+// router.get('/trainings', getTrainingLogs);
 
 export default router;
