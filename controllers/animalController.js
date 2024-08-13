@@ -14,7 +14,7 @@ export const createAnimal = async (req, res) => {
             return res.status(400).json({ message: "Invalid data type in request body!" });
         }
 
-        const ownerExists = await User.exists({ _id: owner }).exec();
+        const ownerExists = await User.exists({ _id: owner });
         if (!ownerExists) {
             return res.status(400).json({ message: "Owner with this ID does not exist!" });
         }

@@ -15,13 +15,13 @@ export const createTrainingLog = async (req, res) => {
             return res.status(400).json({ message: "Invalid data type in request body!" });
         }
 
-        const ownerExists = await User.exists({ _id: user }).exec();
-        const animalExists = await Animal.exists({ _id: animal }).exec();
+        const ownerExists = await User.exists({ _id: user });
+        const animalExists = await Animal.exists({ _id: animal });
         if (!ownerExists || !animalExists) {
             return res.status(400).json({ message: "Owner or animal with the provided ID does not exist!" });
         }
 
-        const dbAnimal = await Animal.findById(animal).exec();
+        const dbAnimal = await Animal.findById(animal);
 
         if (dbAnimal.owner !== user) {
             return res.status(400).json({ message: "User is not the owner of the animal!" });
