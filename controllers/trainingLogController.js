@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import TrainingLog from "../models/trainingLog.js";
+import User from "../models/user.js";
+import Animal from "../models/animal.js";
 
 export const createTrainingLog = async (req, res) => {
     try {
@@ -29,6 +31,6 @@ export const createTrainingLog = async (req, res) => {
         res.status(200).json(trainingLog);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Something went wrong! " + error.message });
+        res.status(500).json({ message: "Something went wrong while creating training log! " + error.message });
     }
 };

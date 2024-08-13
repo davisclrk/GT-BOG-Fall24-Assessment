@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Animal from "../models/animal.js";
+import User from "../models/user.js";
 
 export const createAnimal = async (req, res) => {
     try {
@@ -22,6 +23,6 @@ export const createAnimal = async (req, res) => {
         res.status(200).json(animal);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Something went wrong! " + error.message });
+        res.status(500).json({ message: "Something went wrong while creating animal! " + error.message });
     }
 };
