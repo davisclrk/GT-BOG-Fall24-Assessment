@@ -50,3 +50,7 @@ export const loginUser = async (req, res) => {
     }
     return res.status(200).json({ message: "Login successful!" });
 };
+
+export const verifyUser = async (req, res) => {
+
+};
