@@ -12,14 +12,9 @@ app.use(cors({ origin: true }));
 app.use(express.json());
 app.use('/api', routes);
 
-
 app.get('/', (req, res) => {
     res.json({"Hello": "World",
             "Version": 2})
-});
-
-app.get('/api/health', (req, res) => {
-    res.json({"healthy": true})
 });
 
 mongoose.connect(process.env.DATABASE_URI)
