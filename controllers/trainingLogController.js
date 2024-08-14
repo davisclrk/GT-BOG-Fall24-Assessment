@@ -5,17 +5,18 @@ import Animal from "../models/animal.js";
 
 export const createTrainingLog = async (req, res) => {
     try {
-        const { date, description, hours, animal, user, trainingLogVideo } = req.body;
+        const { date, description, hours, animal, trainingLogVideo } = req.body;
+        const ownerId = req.user.id;
 
-        if (!date || !description || !hours || !animal || !user) {
+        if (!date || !description || !hours || !animal || !ownerId) {
             return res.status(400).json({ message: "Request body missing fields!" });
         }
 
-        if ((date instanceof Date && !isNaN(date.valueOf())) || typeof description !== 'string' || typeof hours !== 'number' || !(mongoose.Types.ObjectId.isValid(animal)) || !(mongoose.Types.ObjectId.isValid(user)) || (trainingLogVideo && typeof trainingLogVideo !== 'string')){
+        if ((date instanceof Date && !isNaN(date.valueOf())) || typeof description !== 'string' || typeof hours !== 'number' || !(mongoose.Types.ObjectId.isValid(animal)) || (trainingLogVideo && typeof trainingLogVideo !== 'string')){
             return res.status(400).json({ message: "Invalid data type in request body!" });
         }
 
-        const ownerExists = await User.exists({ _id: user });
+        const ownerExists = await User.exists({ _id: ownerId });
         const animalExists = await Animal.exists({ _id: animal });
         if (!ownerExists || !animalExists) {
             return res.status(400).json({ message: "Owner or animal with the provided ID does not exist!" });
@@ -23,11 +24,11 @@ export const createTrainingLog = async (req, res) => {
 
         const dbAnimal = await Animal.findById(animal);
 
-        if (dbAnimal.owner !== user) {
+        if (dbAnimal.owner !== ownerId) {
             return res.status(400).json({ message: "User is not the owner of the animal!" });
         }
 
-        const trainingLog = await TrainingLog.create(req.body);
+        const trainingLog = await TrainingLog.create({ ...req.body, owner: ownerId });
         res.status(200).json(trainingLog);
     } catch (error) {
         console.log(error);

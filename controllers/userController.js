@@ -1,5 +1,6 @@
 import User from "../models/user.js";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
     try {
@@ -29,28 +30,73 @@ export const createUser = async (req, res) => {
     }
 };
 
+const login = async (email, password) => {
+    try {
+        const dbUser = await User.findOne({ email: email });
+        if (!dbUser) {
+            throw new AuthError("Invalid email or password!");
+        }
+
+        const passwordMatch = await bcrypt.compare(password, dbUser.password);
+        if (!passwordMatch) {
+            throw new AuthError("Invalid email or password!");
+        }
+
+        return dbUser;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ message: "Request body missing fields!" });
-    }
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Request body missing fields!" });
+        }
 
-    if (typeof email !== 'string' || typeof password !== 'string'){
-        return res.status(400).json({ message: "Invalid data type in request body!" });
-    }
+        if (typeof email !== 'string' || typeof password !== 'string'){
+            return res.status(400).json({ message: "Invalid data type in request body!" });
+        }
 
-    const dbUser = await User.findOne({ email: email });
-    if (!dbUser) {
-        return res.status(403).json({ message: "Invalid email or password!" });
+        await login(email, password);
+        return res.status(200).json({ message: "Login successful!" });
+    } catch (error) {
+        if (error instanceof AuthError) {
+            return res.status(403).json({ message: error.message });
+        }
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong while logging in! " + error.message });
     }
-
-    const passwordMatch = await bcrypt.compare(password, dbUser.password);
-    if (!passwordMatch) {
-        return res.status(403).json({ message: "Invalid email or password!" });
-    }
-    return res.status(200).json({ message: "Login successful!" });
 };
 
 export const verifyUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Request body missing fields!" });
+        }
 
+        if (typeof email !== 'string' || typeof password !== 'string'){
+            return res.status(400).json({ message: "Invalid data type in request body!" });
+        }
+
+        const dbUser = await login(email, password);
+        const user = { id: dbUser._id, email: dbUser.email };
+        const token = jwt.sign(user, process.env.JWT_STRING, { expiresIn: "5m" });
+        return res.status(200).json(token);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            return res.status(403).json({ message: error.message });
+        }
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong while logging in! " + error.message });
+    }
 };
+
+class AuthError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "AuthError";
+    }
+}
