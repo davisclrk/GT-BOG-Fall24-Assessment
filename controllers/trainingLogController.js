@@ -31,7 +31,6 @@ export const createTrainingLog = async (req, res) => {
         const trainingLog = await TrainingLog.create({ ...req.body, owner: ownerId });
         res.status(200).json(trainingLog);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: "Something went wrong while creating training log! " + error.message });
     }
 };

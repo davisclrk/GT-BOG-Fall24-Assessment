@@ -23,7 +23,6 @@ export const createAnimal = async (req, res) => {
         const animal = await Animal.create({ ...req.body, owner: ownerId });
         res.status(200).json(animal);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: "Something went wrong while creating animal! " + error.message });
     }
 };

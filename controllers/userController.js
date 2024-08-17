@@ -25,7 +25,6 @@ export const createUser = async (req, res) => {
         const user = await User.create({ ...req.body, password: encryptedPassword });
         res.status(200).json(user);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: "Something went wrong while creating user! " + error.message });
     }
 };
@@ -65,7 +64,6 @@ export const loginUser = async (req, res) => {
         if (error instanceof AuthError) {
             return res.status(403).json({ message: error.message });
         }
-        console.log(error);
         res.status(500).json({ message: "Something went wrong while logging in! " + error.message });
     }
 };
@@ -89,7 +87,6 @@ export const verifyUser = async (req, res) => {
         if (error instanceof AuthError) {
             return res.status(403).json({ message: error.message });
         }
-        console.log(error);
         res.status(500).json({ message: "Something went wrong while logging in! " + error.message });
     }
 };
