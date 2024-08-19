@@ -43,6 +43,7 @@ const login = async (email, password) => {
 
         return dbUser;
     } catch (error) {
+        console.log("Could not log in!");
         throw error;
     }
 }
@@ -91,9 +92,19 @@ export const verifyUser = async (req, res) => {
     }
 };
 
+export const updateUserProfilePicture = async (id, profilePicture) => {
+    try {
+        const update = { profilePicture: profilePicture };
+        await User.updateOne({ _id: id }, update);
+    } catch (error) {
+        console.log("Could not update user profile picture!");
+        throw error;
+    }
+};
+
 class AuthError extends Error {
     constructor(message) {
         super(message);
         this.name = "AuthError";
     }
-}
+};

@@ -24,13 +24,23 @@ export const createTrainingLog = async (req, res) => {
 
         const dbAnimal = await Animal.findById(animal);
 
-        if (dbAnimal.owner !== ownerId) {
+        if (dbAnimal.owner != ownerId) {
             return res.status(400).json({ message: "User is not the owner of the animal!" });
         }
 
-        const trainingLog = await TrainingLog.create({ ...req.body, owner: ownerId });
+        const trainingLog = await TrainingLog.create({ ...req.body, user: ownerId });
         res.status(200).json(trainingLog);
     } catch (error) {
         res.status(500).json({ message: "Something went wrong while creating training log! " + error.message });
+    }
+};
+
+export const updateTrainingLogVideo = async (id, video) => {
+    try {
+        const update = { trainingLogVideo: video };
+        await TrainingLog.updateOne({ _id: id }, update);
+    } catch (error) {
+        console.log("Could not update training log video!");
+        throw error;
     }
 };

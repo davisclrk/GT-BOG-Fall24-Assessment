@@ -26,3 +26,13 @@ export const createAnimal = async (req, res) => {
         res.status(500).json({ message: "Something went wrong while creating animal! " + error.message });
     }
 };
+
+export const updateAnimalProfilePicture = async (id, profilePicture) => {
+    try {
+        const update = { profilePicture: profilePicture };
+        await Animal.updateOne({ _id: id }, update);
+    } catch (error) {
+        console.log("Could not update animal profile picture!");
+        throw error;
+    }
+};
